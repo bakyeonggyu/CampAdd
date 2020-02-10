@@ -1,0 +1,38 @@
+<%- include("../partials/header") %>
+	
+
+	<header class="jumbotron">
+		<div class="container">		
+			<H1>Welcome to YelpCamp!</H1>
+			<p>View our hand-picked campgrounds from all over the world</p>
+			<p>
+				<a class="btn btn-primary btn-lg" href="/campgrounds/new">Add New Campground</a>
+			</p>
+		</div>
+	</header>
+	
+	<div class="row text-center" id="campground-grid">
+		<% campgrounds.forEach(function(campground){ %>
+			<div class="col-lg-3 col-md-4 col-sm-6 mb-4">
+				<div class="card">
+				  <img src="<%= campground.image %>" class="card-img-top" alt="<%= campground.name %>">
+				  <div class="card-body">
+					<h5 class="card-title"><%= campground.name %></h5>
+					<% if(campground.rating ===0 ) { %>
+							<em>No reviews yet.</em>
+					<% } else { %>
+							<span class="fa fa-star checked"></span>
+							<span class="fa fa-star <% if (campground.rating > 1.5) { %> checked <% } %>"></span>
+							<span class="fa fa-star <% if (campground.rating > 2.5) { %> checked <% } %>"></span>
+							<span class="fa fa-star <% if (campground.rating > 3.5) { %> checked <% } %>"></span>
+							<span class="fa fa-star <% if (campground.rating > 4.5) { %> checked <% } %>"></span>
+					<% } %>
+					<a href="/campgrounds/<%= campground._id %>" class="btn btn-primary">More Info</a>
+				  </div>
+				</div>
+			</div>		
+		<% }); %>
+	</div>
+
+
+<%- include("../partials/footer") %>
