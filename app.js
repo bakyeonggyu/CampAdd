@@ -19,9 +19,11 @@ var express 	= require("express"),
 		campgroundRoutes = require("./routes/campgrounds"),
 		indexRoutes = require("./routes/index");
 
-// mongoose.connect("mongodb://localhost:27017/yelp_camp_v11DImage4", {useNewUrlParser: true, useUnifiedTopology: true});
-// mongoose.set('useCreateIndex', true);
-mongoose.connect("mongodb+srv://theoldpark:940116@cluster0-w5agk.mongodb.net/test?retryWrites=true&w=majority", {
+
+
+// mongoose.connect("mongodb://localhost:27017/yelp_camp_v11Deployed", {useNewUrlParser: true, useUnifiedTopology: true});
+// mongoose.set('useCreateIndex', true); "mongodb+srv://theoldpark:940116@cluster0-w5agk.mongodb.net/test?retryWrites=true&w=majority"
+mongoose.connect(process.env.DATABASEURL, {
 	useNewUrlParser: true,
 	useCreateIndex: true,
 	useUnifiedTopology: true
