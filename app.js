@@ -23,7 +23,8 @@ var express 	= require("express"),
 // mongoose.set('useCreateIndex', true);
 mongoose.connect('mongodb+srv://devsproupt:940116@cluster0-w5agk.mongodb.net/test?retryWrites=true&w=majority', {
 	useNewUrlParser: true,
-	useCreteIndex: true
+	useCreteIndex: true,
+	useUnifiedTopology: true
 }).then(() => {
 	console.log('Connected to DB!');
 }).catch(err => {
