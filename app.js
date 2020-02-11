@@ -21,9 +21,9 @@ var express 	= require("express"),
 
 // mongoose.connect("mongodb://localhost:27017/yelp_camp_v11DImage4", {useNewUrlParser: true, useUnifiedTopology: true});
 // mongoose.set('useCreateIndex', true);
-mongoose.connect('mongodb+srv://devsproupt:940116@cluster0-w5agk.mongodb.net/test?retryWrites=true&w=majority', {
+mongoose.connect("mongodb+srv://theoldpark:940116@cluster0-w5agk.mongodb.net/test?retryWrites=true&w=majority", {
 	useNewUrlParser: true,
-	useCreteIndex: true,
+	useCreateIndex: true,
 	useUnifiedTopology: true
 }).then(() => {
 	console.log('Connected to DB!');
