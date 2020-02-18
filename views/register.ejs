@@ -2,7 +2,7 @@
 
 <div class="row">
     <div class="col-md-12">
-			<form class="form-signin" action="/register" method="POST">
+			<form class="form-signin" action="/register" method="POST" enctype="multipart/form-data">
 			  <h1 class="h3 mb-3 font-weight-normal">Please sign up</h1>
 			  <label for="inputUsername" class="sr-only">Username</label>
 			  <input type="text" id="inputUsername" class="form-control" name="username" placeholder="Username" required autofocus>
@@ -11,7 +11,11 @@
 			  <input type="text" class="form-control" name="firstName" placeholder="first name">
 			  <input type="text" class="form-control" name="lastName" placeholder="last name">
 			  <input type="email" class="form-control" name="email" placeholder="email" required>
-			  <input type="text" class="form-control" name="avatar" placeholder="avatar url">
+				<div class="form-group">
+					<label for="avatar">Avatar</label>
+					<input type="file" id="avatar" name="avatar" accept="image/*" required>
+				</div>
+				<input type="text" class="form-control" name="introduce" placeholder="introduce">
 			  <input type="text" class="form-control" name="adminCode" placeholder="admin code">
 			  <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 			</form>

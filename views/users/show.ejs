@@ -6,16 +6,15 @@
 		<h1>
 			<%= user.firstName + " " + user.lastName %>
 		</h1>
-		<div class="thumbnail">			
+		<div class="card">			
 			<img src="<%= user.avatar %>" alt="user profile image">
 			<div class="caption">
 				<a href="mailto:<%=user.email %>"><%= user.email %></a>
 			</div>
 		</div>
-		dasjfhlasdjkfhlaskjhflkdsajhflkjdsahflkdjsahlkjdsahfclkjsahdlfkjsadhlkfjahdsklfdshakjlfsdhalkjfdhsaljkfhsadjlkfhdjsalkjfahdslkfdhsalkjfdhsalkjfhsdlkfjhdsalkjfsdhalfjsdalhfjdslafjldsahfjdslakfhjlsdakjf
-		
-		dsajlkfhlsadjkhfldsakhflkdsajfhsldakjfhsdalfjhklsdahflsdkahfldsajfhlsakdjfda
-		sdajfhsadlkfhjdslfhjlsdakfhdlasjfdkslahflkd
+		<div class="form-group">
+			<textarea class="form-control" rows="3"><%= user.introduce %></textarea>
+		</div>
 	</div>
 	<div class="col-md-8">
 		<h3>
@@ -27,10 +26,12 @@
 		<% }); %>
 		</ul>
 	</div>
+	<% if (currentUser && user._id.equals(currentUser._id) || currentUser && currentUser.isAdmin){ %>
+			<a class="btn btn-warning" href="/users/<%= user._id %>/edit">Edit</a>
+	<% } %>
 	<dlv class="col">
 		<a href="/follow/<%= user.id %>"><button class="btn btn-primary">Follow <%= user.username %></button></a>
 	</dlv>
-	
 </div>
 
 <%- include("../partials/footer") %>

@@ -23,7 +23,7 @@ var imageFilter = function (req, file, cb) {
     }
     cb(null, true);
 };
-var upload = multer({ storage: storage, fileFilter: imageFilter})
+var upload = multer({ storage: storage, fileFilter: imageFilter});
 
 var cloudinary = require('cloudinary');
 cloudinary.config({ 
@@ -81,7 +81,7 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), async function(r
   var author = {
       id: req.user._id,
       username: req.user.username
-  }  
+  } 
   cloudinary.v2.uploader.upload(req.file.path, function(err, result) {
 	  var image = result.secure_url;
 	  var imageId = result.public_id;
@@ -107,7 +107,6 @@ router.post("/", middleware.isLoggedIn, upload.single('image'), async function(r
 					follower.notifications.push(notification);
 					follower.save();
 				}
-					
 				//redirect back to campgrounds page
 				res.redirect(`/campgrounds/${campground.id}`);
 			} catch(err){
@@ -179,6 +178,7 @@ router.put("/:id", middleware.checkCampgroundOwnership, upload.single('image'), 
 				campground.name = req.body.campground.name;
 				campground.description = req.body.campground.description;
 				campground.save();
+				// eval(pry.it);
 				req.flash("success","Successfully Updated!");
 				res.redirect("/campgrounds/" + campground._id);
 			}

@@ -11,6 +11,28 @@ var nodemailer = require("nodemailer");
 var crypto = require("crypto");
 var middleware = require("../middleware");
 
+var multer = require('multer');
+var storage = multer.diskStorage({
+  filename: function(req, file, callback) {
+    callback(null, Date.now() + file.originalname);
+  }
+});
+var imageFilter = function (req, file, cb) {
+    // accept image files only
+    if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/i)) {
+        return cb(new Error('Only image files are allowed!'), false);
+    }
+    cb(null, true);
+};
+var upload = multer({ storage: storage, fileFilter: imageFilter});
+
+var cloudinary = require('cloudinary');
+cloudinary.config({ 
+  cloud_name: 'theoldpark', 
+  api_key: process.env.CLOUDINARY_API_KEY, 
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
 pry = require('pryjs');
 //root route
 router.get("/", function(req, res){
@@ -22,27 +44,42 @@ router.get("/register", function(req, res){
 	res.render("register", {page: 'register'});
 });
 //handle sign up logic
-router.post("/register", function(req, res){
-	var newUser = new User({
-			username: req.body.username,
-			firstName: req.body.firstName,
-			lastName: req.body.lastName,
-			email: req.body.email,
-			avatar: req.body.avatar
-		});
+router.post("/register", upload.single('avatar'), async function(req, res){
+	var username = req.body.username;
+	var firstName = req.body.firstName;
+	var lastName = req.body.lastName;
+	var introduce = req.body.introduce;
+	var email = req.body.email;
 	
-	// eval(pry.it);
-	if(req.body.adminCode === 'test'){
-		newUser.isAdmin = true;
-	}
-	User.register(newUser, req.body.password, function(err, user){
-		if(err){
-			console.log(err);
-			return res.render("register", {error: err.message});
+	cloudinary.v2.uploader.upload(req.file.path, function(err, result) {
+		var avatar = result.secure_url;
+		var avatarId = result.public_id;
+		
+		var newUser = {
+			username: username,
+			firstName: firstName,
+			lastName: lastName,
+			introduce: introduce,
+			email: email,
+			avatar: avatar,
+			avatarId: avatarId
+		};
+		// let profile = await User.create(newUser);
+			// eval(pry.it);
+		if(req.body.adminCode === 'test'){
+			newUser.isAdmin = true;
 		}
-		passport.authenticate("local")(req, res, function(){
-			req.flash("success", "Welcome to YelpCamp " + req.body.username);
-			res.redirect("/campgrounds");
+
+		User.register(newUser, req.body.password, async function(err, user){
+			if(err){
+				console.log(err);
+				return res.render("register", {error: err.message});
+			}
+
+			passport.authenticate("local")(req, res, function(){
+				req.flash("success", "Welcome to YelpCamp " + req.body.username);
+				res.redirect("/campgrounds");
+			});
 		});
 	});
 });
@@ -198,6 +235,38 @@ router.get("/users/:id", async function(req, res){
 		req.flash('error', err.message);
 		res.redirect('back');
 	}
+});
+
+// EDIT profile ROUTE
+router.get("/users/:id/edit", middleware.checkProfileOwnership, function(req, res){
+		User.findById(req.params.id, function(err, foundUser){
+			res.render("users/edit", {user: foundUser});
+		});	
+});
+// UPDATE profile ROUTE
+router.put("/users/:id", upload.single('avatar'), function(req, res){
+		User.findByIdAndUpdate(req.params.id, req.body.user, async function(err, profile){
+			eval(pry.it);
+			if(err){
+				req.flash("error", err.message);
+				res.redirect("back");
+			} else {
+				if(req.file){
+					try{
+						await cloudinary.v2.uploader.destroy(profile.avatarId);
+						var result = await cloudinary.v2.uploader.upload(req.file.path);
+						profile.avatar = result.secure_url;
+						profile.introduce = req.body.user.introduce;
+					} catch(err){
+						req.flash("error", err.message);
+						return res.redirect("back");
+					}
+				}
+				profile.save();
+				req.flash("success","Successfully Updated!");
+				res.redirect("/users/" + profile._id);
+			}
+		});
 });
 
 // follow user
