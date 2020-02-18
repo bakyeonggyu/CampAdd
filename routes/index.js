@@ -246,7 +246,6 @@ router.get("/users/:id/edit", middleware.checkProfileOwnership, function(req, re
 // UPDATE profile ROUTE
 router.put("/users/:id", upload.single('avatar'), function(req, res){
 		User.findByIdAndUpdate(req.params.id, req.body.user, async function(err, profile){
-			eval(pry.it);
 			if(err){
 				req.flash("error", err.message);
 				res.redirect("back");
