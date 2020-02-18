@@ -160,14 +160,18 @@ router.put("/:id", middleware.checkCampgroundOwnership, upload.single('image'), 
 		req.body.campground.lng = data[0].longitude;
 		req.body.campground.location = data[0].formattedAddress;
 		Campground.findById(req.params.id, req.body.campground, async function(err, campground){
+			eval(pry.it);
 			if(err){
 				req.flash("error", err.message);
 				res.redirect("back");
 			} else {
 				if(req.file){
 					try{
-						await cloudinary.v2.uploader.destroy(campground.imageId);
+						console.log("error1");
+						// await cloudinary.v2.uploader.destroy(campground.imageId);
+						console.log("error2");
 						var result = await cloudinary.v2.uploader.upload(req.file.path);
+						console.log("error3");
 						campground.imageId = result.public_id;
 						campground.image = result.secure_url;
 					} catch(err){

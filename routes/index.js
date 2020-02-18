@@ -245,27 +245,27 @@ router.get("/users/:id/edit", middleware.checkProfileOwnership, function(req, re
 });
 // UPDATE profile ROUTE
 router.put("/users/:id", upload.single('avatar'), function(req, res){
-		User.findByIdAndUpdate(req.params.id, req.body.user, async function(err, profile){
-			if(err){
-				req.flash("error", err.message);
-				res.redirect("back");
-			} else {
-				if(req.file){
-					try{
-						await cloudinary.v2.uploader.destroy(profile.avatarId);
-						var result = await cloudinary.v2.uploader.upload(req.file.path);
-						profile.avatar = result.secure_url;
-						profile.introduce = req.body.user.introduce;
-					} catch(err){
-						req.flash("error", err.message);
-						return res.redirect("back");
-					}
+	User.findByIdAndUpdate(req.params.id, req.body.user, async function(err, profile){
+		if(err){
+			req.flash("error", err.message);
+			res.redirect("back");
+		} else {
+			if(req.file){
+				try{
+					await cloudinary.v2.uploader.destroy(profile.avatarId);
+					var result = await cloudinary.v2.uploader.upload(req.file.path);
+					profile.avatar = result.secure_url;
+					profile.introduce = req.body.user.introduce;
+				} catch(err){
+					req.flash("error", err.message);
+					return res.redirect("back");
 				}
-				profile.save();
-				req.flash("success","Successfully Updated!");
-				res.redirect("/users/" + profile._id);
 			}
-		});
+			profile.save();
+			req.flash("success","Successfully Updated!");
+			res.redirect("/users/" + profile._id);
+		}
+	});
 });
 
 // follow user
